@@ -4,9 +4,13 @@
     <meta charset="utf-8">
     <title>Redirecting...</title>
     <script>
-      sessionStorage.redirect = location.pathname;
+      if(window.location.hostname.includes('github.io')) {
+        window.location.href = window.location.origin + '/工程质检记录管理系统' + window.location.pathname;
+      } else {
+        sessionStorage.redirect = location.pathname;
+        window.location.href = '/工程质检记录管理系统' + window.location.pathname;
+      }
     </script>
-    <meta http-equiv="refresh" content="0;URL='/工程质检记录管理系统/'">
   </head>
   <body>
     <p>Redirecting...</p>
