@@ -1,28 +1,40 @@
-name: NodeJS with Grunt
+name: Deploy to GitHub Pages
 
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [18.x, 20.x, 22.x]
-
+    permissions:
+      contents: write
+      pages: write
+      id-token: write
+    
     steps:
-    - uses: actions/checkout@v4
-
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ matrix.node-version }}
-
-    - name: Build
-      run: |
-        npm install
-        grunt
+      - uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'pnpm'
+      
+      - name: Install dependencies
+        run: pnpm install
+      
+      - name: Build production
+        run: pnpm build
+      
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v3
+      
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: 'dist'
+      
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2
